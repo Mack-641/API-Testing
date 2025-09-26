@@ -1,0 +1,137 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Crypto News Feed API",
+        "version": "1.0.0",
+        "description": "An API that serves cryptocurrency news from multiple RSS sources. Documented with Scalar UI."
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "Development server"
+        }
+    ],
+    "paths": {
+        "/hello": {
+            "get": {
+                "summary": "Say hello",
+                "description": "Returns a simple hello world message.",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "message": "Hello, world!"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/news": {
+            "get": {
+                "summary": "Get news from crypto RSS feeds",
+                "description": "Fetches and returns articles from one or more cryptocurrency news sources.",
+                "parameters": [
+                    {
+                        "name": "source",
+                        "in": "query",
+                        "description": "Comma-separated list of news sources to fetch (e.g. `coindesk,cointelegraph`).",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "cryptopanic",
+                                "coindesk",
+                                "cointelegraph",
+                                "decrypt",
+                                "blockchainnews",
+                                "ccn",
+                                "tokeninsight",
+                                "bitrss"
+                            ]
+                        },
+                        "example": "coindesk,cointelegraph"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response with news articles.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Bitcoin Hits $70K"
+                                                },
+                                                "link": {
+                                                    "type": "string",
+                                                    "example": "https://www.coindesk.com/some-article"
+                                                },
+                                                "pubDate": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-09-26T10:00:00Z"
+                                                },
+                                                "source": {
+                                                    "type": "string",
+                                                    "example": "coindesk"
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "coindesk": [
+                                        {
+                                            "title": "Bitcoin Hits $70K",
+                                            "link": "https://www.coindesk.com/some-article",
+                                            "pubDate": "2025-09-26T10:00:00Z",
+                                            "source": "coindesk"
+                                        }
+                                    ],
+                                    "cointelegraph": [
+                                        {
+                                            "title": "Ethereum ETF Gains Approval",
+                                            "link": "https://cointelegraph.com/some-article",
+                                            "pubDate": "2025-09-26T11:30:00Z",
+                                            "source": "cointelegraph"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid or missing source parameter.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "error": "Invalid source"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error fetching feed.",
+                        "content": {
+                            "application/json": {
+                                "example": {
+                                    "error": "Failed to fetch feed"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
